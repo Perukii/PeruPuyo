@@ -5,20 +5,19 @@ peruHost mainHost;
 
 #define _X(X) mainHost.getPosFromCurrentSizeX(X)
 #define _Y(Y) mainHost.getPosFromCurrentSizeY(Y)
+#define PERUPUYO_MODE nazoperu
+
+#include <random>
+#include <iostream>
+#include <set>
+
+std::random_device rd;
 
 #include "perupuyo.h"
 #include "nazoperu.h"
 #include "signalDefinition.h"
-#include <iostream>
 
 
-
-
-static gboolean
-loopEvent(GtkWidget * widget){
-    gtk_widget_queue_draw(widget);
-    return true;
-}
 
 
 int main(int _argc, char ** _argv){
@@ -26,7 +25,8 @@ int main(int _argc, char ** _argv){
 
     mainHost.setup("style.css");
     mainHost.setDefaultSize(800,800);
-    mainHost.loop=3;
+    PERUPUYO_MODE::puyoMain.setup(0,0,_Y(1));
+    mainHost.loop=5;
     
     mainHost.run();
 }

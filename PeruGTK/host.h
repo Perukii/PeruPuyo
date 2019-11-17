@@ -6,7 +6,7 @@ public:
      GtkWidget * window;
      GtkWidget * canvas;
 
-     int w=100, h=100, minw=0, minh=0, x, y, loop=0;
+     int w=0, h=0, minw=0, minh=0, x, y, loop=0;
 
      bool titlebar = true;
 
@@ -53,6 +53,7 @@ public:
           gtk_window_get_position(GTK_WINDOW(window), &x, &y);
           g_signal_connect(window, "destroy"            , G_CALLBACK(quitEvent)      , NULL);
           g_signal_connect(window, "key-press-event"    , G_CALLBACK(keyEvent)       , NULL);
+          g_signal_connect(window, "key-release-event"  , G_CALLBACK(keyReleaseEvent), NULL);
           g_signal_connect(canvas, "draw"               , G_CALLBACK(drawEvent)      , NULL);
           g_signal_connect(window, "motion-notify-event", G_CALLBACK(mouseMoveEvent) , NULL);
           
