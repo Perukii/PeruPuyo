@@ -10,15 +10,13 @@ peruHost mainHost;
 #include <random>
 #include <iostream>
 #include <set>
+#include <utility>
 
 std::random_device rd;
 
 #include "perupuyo.h"
 #include "nazoperu.h"
 #include "signalDefinition.h"
-
-
-
 
 int main(int _argc, char ** _argv){
     gtk_init(&_argc, &_argv);
@@ -27,6 +25,5 @@ int main(int _argc, char ** _argv){
     mainHost.setDefaultSize(800,800);
     PERUPUYO_MODE::puyoMain.setup(0,0,_Y(1));
     mainHost.loop=5;
-    
     mainHost.run();
 }

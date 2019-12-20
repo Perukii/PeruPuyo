@@ -52,7 +52,7 @@ public:
           gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
           gtk_window_get_position(GTK_WINDOW(window), &x, &y);
           g_signal_connect(window, "destroy"            , G_CALLBACK(quitEvent)      , NULL);
-          g_signal_connect(window, "key-press-event"    , G_CALLBACK(keyEvent)       , NULL);
+          g_signal_connect(window, "key-press-event"    , G_CALLBACK(keyPressEvent)  , NULL);
           g_signal_connect(window, "key-release-event"  , G_CALLBACK(keyReleaseEvent), NULL);
           g_signal_connect(canvas, "draw"               , G_CALLBACK(drawEvent)      , NULL);
           g_signal_connect(window, "motion-notify-event", G_CALLBACK(mouseMoveEvent) , NULL);

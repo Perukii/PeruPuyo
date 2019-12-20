@@ -14,7 +14,7 @@ pRGB pallete[]={
 #define PERUPUYO_TABLE_H 13
 #define PERUPUYO_NEXT    3
 #define PERUPUYO_TYPE_NUM 3
-
+#define PERUPUYO_KEY_UPDATE 10
 
 class puyoSet{
 private:
@@ -81,12 +81,21 @@ public:
      }
 
      void nextPhase(bool first=false){
+
+
+          // put controled puyos
+          
+          for(int i=0;i<2;i++){
+               if(phase)table[int(cpy)+i*int(angly[cangl])][int(cpx)+i*int(anglx[cangl]) ]=cPuyo[i];
+               cPuyo[i]=readyPuyo[i];
+          }
+
           phase++;
           cpx=2;
           cpy=0;
           cangl=0;
-          cPuyo[0]=readyPuyo[0];
-          cPuyo[1]=readyPuyo[1];
+          
+          //cPuyo[1]=readyPuyo[1];
           if(!first){
                for(int i=0;i<PERUPUYO_NEXT;i++){
                     for(int j=0;j<2;j++){
@@ -99,19 +108,35 @@ public:
 
      }
 
+
+     bool checkFloor(){
+          return    cpy<PERUPUYO_TABLE_H-1
+                and angly[cangl]+cpy<PERUPUYO_TABLE_H-1;
+     }
+
+     bool checkWall(){ 
+          return    cpx>=0 
+                and cpx<PERUPUYO_TABLE_W
+                and anglx[cangl]+cpx>=0 
+                and anglx[cangl]+cpx<PERUPUYO_TABLE_W;
+     }
+
+
      void process(){
-          cpy+=0.01;
+          cpy+=0.03;
+          if(!checkFloor())nextPhase();
      }
 
      void varyAngl(short _ap){
+          int bcangl=cangl;
           cangl=(cangl+_ap+4)%4;
+          if(!checkWall())cangl=bcangl;
      }
 
      void varyPos(short _pp){
           cpx+=_pp;
+          if(!checkWall())cpx-=_pp;
      }
-
-
 
 };
 

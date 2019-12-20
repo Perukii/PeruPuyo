@@ -6,7 +6,4 @@ namespace nazoperu{
           puyoMain.drawPuyoSet(cr);
      }
 
-     
-
-
 };

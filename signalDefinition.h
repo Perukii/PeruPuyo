@@ -1,8 +1,9 @@
 
 std::set<guint> availKeys={};
+int keyTime=0;
 
 static gboolean
-keyEvent(GtkWidget * widget, GdkEventKey * event, gpointer user_data){
+keyPressEvent(GtkWidget * widget, GdkEventKey * event, gpointer user_data){
      std::cout<<event->keyval<<std::endl;
      availKeys.insert(event->keyval);
 
@@ -25,11 +26,13 @@ static gboolean
 loopEvent(GtkWidget * widget){
     PERUPUYO_MODE::puyoMain.process();
     gtk_widget_queue_draw(widget);
-
-    for(auto it:availKeys){
-              
+    if(!availKeys.size())keyTime=0;
+    else keyTime++;
+    for(auto & it:availKeys){
+          if(keyTime%PERUPUYO_KEY_UPDATE)break;
           switch(it){
                case 113: //q
+                    
                     PERUPUYO_MODE::puyoMain.varyAngl( 1);
                     break;
 
