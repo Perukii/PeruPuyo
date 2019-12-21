@@ -4,18 +4,18 @@ int keyTime=0;
 
 static gboolean
 keyPressEvent(GtkWidget * widget, GdkEventKey * event, gpointer user_data){
-     std::cout<<event->keyval<<std::endl;
-     availKeys.insert(event->keyval);
+    //std::cout<<event->keyval<<std::endl;
+    availKeys.insert(event->keyval);
 
 }
 
 static gboolean keyReleaseEvent(GtkWidget * widget, GdkEventKey * event, gpointer user_data){
-     availKeys.erase(event->keyval);
+    availKeys.erase(event->keyval);
 }
 
 static gboolean
 drawEvent(GtkWidget * widget, cairo_t * cr, gpointer data){
-     PERUPUYO_MODE::draw(cr);
+    PERUPUYO_MODE::draw(cr);
 }        
 
 static gboolean mouseMoveEvent(GtkWidget *widget,GdkEvent *event, gpointer user_data) {
@@ -28,28 +28,36 @@ loopEvent(GtkWidget * widget){
     gtk_widget_queue_draw(widget);
     if(!availKeys.size())keyTime=0;
     else keyTime++;
+    
+    PERUPUYO_MODE::puyoMain.boost=false;
+
     for(auto & it:availKeys){
-          if(keyTime%PERUPUYO_KEY_UPDATE)break;
-          switch(it){
-               case 113: //q
-                    
+        switch(it){
+            case 115 : //s
+                    PERUPUYO_MODE::puyoMain.boost=true;
+            default:break; 
+        }
+        if(keyTime%PERUPUYO_KEY_UPDATE)continue;
+        switch(it){
+            case 113: //q
                     PERUPUYO_MODE::puyoMain.varyAngl( 1);
                     break;
 
-               case 101: //e
+            case 101: //e
                     PERUPUYO_MODE::puyoMain.varyAngl(-1);
                     break;
 
-               case 100: //d
+            case 100: //d
                     PERUPUYO_MODE::puyoMain.varyPos( 1);
                     break;
 
-               case 97 : //a
+            case 97 : //a
                     PERUPUYO_MODE::puyoMain.varyPos(-1);
                     break;
-               default:break; 
-          }
-     
+
+            default:break; 
+        }
+    
     }
     return true;
 }

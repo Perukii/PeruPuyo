@@ -1,6 +1,5 @@
 
 
-
 pRGB pallete[]={
      pRGB(1.0,1.0,1.0,0.0),
      pRGB(0.0,0.0,0.0,0.2),
@@ -16,22 +15,26 @@ pRGB pallete[]={
 #define PERUPUYO_TYPE_NUM 3
 #define PERUPUYO_KEY_UPDATE 10
 
+
 class puyoSet{
 private:
      int anglx[4]={0,1,0,-1};
      int angly[4]={1,0,-1,0};
 public:
-     int table[PERUPUYO_TABLE_H][PERUPUYO_TABLE_W];
-     int readyPuyo[PERUPUYO_NEXT*2],cPuyo[2];
-     int phase,lptime;
-     double sx,sy,w,h,blockSize;
-     double cpx,cpy;
-     int cangl;
+     int table[PERUPUYO_TABLE_H][PERUPUYO_TABLE_W]; // table size
+     int readyPuyo[PERUPUYO_NEXT*2],cPuyo[2]; // color (readyPuyo: reserved puyos, cPuyo: controling puyos)
+     int phase,lptime; // phase:phase, lptime:loop time
+     double sx,sy,w,h,blockSize; // draw property
+     double cpx,cpy; // controling puyo location
+     bool boost; // puyospeed boost i/o
+     double speed=0.005,bstspeed=0.2; // puyospeed (speed:default, bstspeed:boosted speed)
+     int cangl; // angl of controling puyos
 
      puyoSet(){}
+     ;
 
      void setup(double _sx, double _sy, double _h){
-          sx = _sx;
+         sx = _sx;
           sy = _sy;
           h  = _h ;
           blockSize = h/(double)PERUPUYO_TABLE_H;
@@ -43,6 +46,7 @@ public:
           }
           phase     = 0;
           lptime    = 0;
+          boost     = false;
           for(int i=0;i<PERUPUYO_NEXT*2;i++){
                readyPuyo[i]=rd()%PERUPUYO_TYPE_NUM+2;
           }
@@ -113,6 +117,7 @@ public:
           return    cpy<PERUPUYO_TABLE_H-1
                 and angly[cangl]+cpy<PERUPUYO_TABLE_H-1;
      }
+     
 
      bool checkWall(){ 
           return    cpx>=0 
@@ -121,21 +126,42 @@ public:
                 and anglx[cangl]+cpx<PERUPUYO_TABLE_W;
      }
 
+     bool checkPuyoCollision(){
+          return    table[int(cpy)+1][int(cpx)]<2
+                and table[int(cpy)+int(angly[cangl])+1][int(cpx)+int(anglx[cangl]) ]<2;
+     }
+
+     bool checkPuyoSideCollision(int _bcangl){ // onry cangl=0
+          return    (_bcangl==3 and table[int(cpy)+int(angly[cangl])+1][int(cpx)+int(anglx[cangl]-1) ]<2)
+                or  (_bcangl==1 and table[int(cpy)+int(angly[cangl])+1][int(cpx)+int(anglx[cangl]+1) ]<2);
+     }
+
 
      void process(){
-          cpy+=0.03;
-          if(!checkFloor())nextPhase();
+          cpy+=boost ? bstspeed : speed;
+          if(!checkFloor() or !checkPuyoCollision())nextPhase();
+          //std::cout<<cangl<<std::endl;
      }
 
      void varyAngl(short _ap){
           int bcangl=cangl;
           cangl=(cangl+_ap+4)%4;
-          if(!checkWall())cangl=bcangl;
+          if(cangl!=0){
+               if(!checkFloor() or !checkWall() or !checkPuyoCollision()){
+                    cangl=bcangl;
+               }
+          }
+          else{
+                if(!checkFloor() or !checkWall() or !checkPuyoCollision() or !checkPuyoSideCollision(bcangl)){
+                    cpy-=1;
+                }
+          }
+
      }
 
      void varyPos(short _pp){
           cpx+=_pp;
-          if(!checkWall())cpx-=_pp;
+          if(!checkWall() or !checkPuyoCollision())cpx-=_pp;
      }
 
 };

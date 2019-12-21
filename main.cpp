@@ -19,11 +19,11 @@ std::random_device rd;
 #include "signalDefinition.h"
 
 int main(int _argc, char ** _argv){
-    gtk_init(&_argc, &_argv);
+     gtk_init(&_argc, &_argv);
 
-    mainHost.setup("style.css");
-    mainHost.setDefaultSize(800,800);
-    PERUPUYO_MODE::puyoMain.setup(0,0,_Y(1));
-    mainHost.loop=5;
-    mainHost.run();
+     mainHost.setup("style.css");
+     mainHost.setDefaultSize(800,800);
+     PERUPUYO_MODE::puyoMain.setup(0,0,_Y(1));
+     mainHost.loop=5;
+     mainHost.run();
 }
