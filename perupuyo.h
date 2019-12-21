@@ -9,11 +9,7 @@ pRGB pallete[]={
      pRGB(0.0,0.0,0.0)
 };
 
-#define PERUPUYO_TABLE_W 6
-#define PERUPUYO_TABLE_H 13
-#define PERUPUYO_NEXT    3
-#define PERUPUYO_TYPE_NUM 3
-#define PERUPUYO_KEY_UPDATE 10
+
 
 
 class puyoSet{
@@ -31,6 +27,7 @@ public:
      int cangl; // angl of controling puyos
      int pushingTime, lpTime; //
      int pushingTimeLimit=100,lpTimeLimit=1500;
+     PPUF uf;
 
      puyoSet(){}
      
@@ -100,6 +97,45 @@ public:
           }
      }
 
+     void chainLoop(int _chain){
+          sortTable();
+          uf.setup();
+          for(int iy=0;iy<PERUPUYO_TABLE_H;iy++){
+               for(int ix=0;ix<PERUPUYO_TABLE_W;ix++){
+                     
+                    if(ix>0 and table[iy][ix]==table[iy][ix-1])uf.unite(
+                          std::make_pair(ix,iy),std::make_pair(ix-1,iy));
+                  
+                    if(iy>0 and table[iy][ix]==table[iy-1][ix])uf.unite(
+                          std::make_pair(ix,iy),std::make_pair(ix,iy-1));
+                    
+               }
+          }
+
+          int groups=0;
+          std::cout<<"chain"<<_chain<<" : ";
+          for(int iy=0;iy<PERUPUYO_TABLE_H;iy++){
+               for(int ix=0;ix<PERUPUYO_TABLE_W;ix++){
+                     std::pair<int,int> rt=uf.root(uf.table[iy][ix].first);
+                     if(uf.table[rt.second][rt.first].second>=PERUPUYO_ERASE_TERM
+                          and table[iy][ix]>=2){
+                           table[iy][ix]=0;
+                           if(iy==rt.second and ix==rt.first){
+                                groups++;
+                                std::cout<<ix<<":"<<iy<<"["<<uf.table[iy][ix].second<<"],";
+                           }
+                     }
+                    
+               }
+          }
+          if(groups==0)std::cout<<"none";
+          std::cout<<std::endl;
+
+          if(groups){
+                chainLoop(++_chain);
+          }
+     }
+
      void nextPhase(bool first=false){ // 
 
           // put controled puyos
@@ -113,6 +149,7 @@ public:
           cpx    = 2;
           cpy    = 0;
           cangl  = 0;
+
           
           //cPuyo[1]=readyPuyo[1];
           if(!first){
@@ -125,7 +162,9 @@ public:
                }
           }
 
-          sortTable();
+          chainLoop(1);
+
+
 
      }
 

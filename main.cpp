@@ -3,6 +3,13 @@
 
 peruHost mainHost;
 
+#define PERUPUYO_TABLE_W 6
+#define PERUPUYO_TABLE_H 13
+#define PERUPUYO_NEXT    3
+#define PERUPUYO_TYPE_NUM 3
+#define PERUPUYO_KEY_UPDATE 10
+#define PERUPUYO_ERASE_TERM 4
+
 #define _X(X) mainHost.getPosFromCurrentSizeX(X)
 #define _Y(Y) mainHost.getPosFromCurrentSizeY(Y)
 #define PERUPUYO_MODE nazoperu
@@ -15,10 +22,11 @@ peruHost mainHost;
 
 std::random_device rd;
 
+#include "uf.h"
 #include "perupuyo.h"
 #include "nazoperu.h"
 #include "signalDefinition.h"
-#include "uf.h"
+
 
 int main(int _argc, char ** _argv){
      gtk_init(&_argc, &_argv);

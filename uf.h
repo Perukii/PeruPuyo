@@ -1,6 +1,51 @@
 
 
+class PPUF{
+public:
+     std::pair<std::pair<int,int>,int> table[PERUPUYO_TABLE_H][PERUPUYO_TABLE_W];  //parent/size
+     //bool eraseable[PERUPUYO_TABLE_H][PERUPUYO_TABLE_W];
 
+     PPUF(){};
+
+     void setup(){
+          
+          for(int iy=0;iy<PERUPUYO_TABLE_H;iy++){
+               for(int ix=0;ix<PERUPUYO_TABLE_W;ix++){
+                    table[iy][ix]=std::make_pair(std::make_pair(ix,iy),1);
+                    //eraseable[iy][ix]=false;
+               }
+          }
+     }
+
+     void debug(){
+          std::cout<<"==================="<<std::endl;
+          for(int iy=0;iy<PERUPUYO_TABLE_H;iy++){
+               for(int ix=0;ix<PERUPUYO_TABLE_W;ix++){
+                    
+                    //std::cout<<eraseable[iy][ix]<<" ";
+               }
+               std::cout<<std::endl;
+          }
+     }
+
+     std::pair<int,int> root(std::pair<int,int> _child){
+          if(_child==table[_child.second][_child.first].first) return _child;
+          else return root(table[_child.second][_child.first].first);
+     }
+
+     void unite(std::pair<int,int> _achild, std::pair<int,int> _bchild){
+          std::pair<int,int> ra=root(_achild);
+          std::pair<int,int> rb=root(_bchild);
+
+          if(table[ra.second][ra.first].first==table[rb.second][rb.first].first)return;
+          table[ra.second][ra.first].first  =  std::make_pair(_bchild.first, _bchild.second);
+          table[rb.second][rb.first].second += table[ra.second][ra.first].second;
+          //if(table[rb.second][rb.first].second>=PERUPUYO_ERASE_TERM)eraseable[rb.second][rb.first]=true;
+     }
+     
+};
+
+/*
 struct UnionFind {
      std::vector<int> par; // par[i]:iの親の番号　(例) par[3] = 2 : 3の親が2
 
@@ -26,3 +71,4 @@ struct UnionFind {
           return rx == ry;
      }
 };
+*/
