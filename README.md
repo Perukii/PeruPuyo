@@ -1,6 +1,4 @@
 
-<<<<<<< HEAD
-
 # PERUPUYO project
 
 By Perukii
@@ -17,7 +15,6 @@ GUI toolkit      : gtk   (3.22.30)
 
 Graphics Library : cairo (1.15.10-2) 
 
-<<<<<<< HEAD
 ## History & Preview
 
 #### e.0.0

@@ -5,5 +5,4 @@ namespace nazoperu{
      void draw(cairo_t * cr){
           puyoMain.drawPuyoSet(cr);
      }
-
 };

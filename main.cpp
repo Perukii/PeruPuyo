@@ -11,12 +11,14 @@ peruHost mainHost;
 #include <iostream>
 #include <set>
 #include <utility>
+#include <vector>
 
 std::random_device rd;
 
 #include "perupuyo.h"
 #include "nazoperu.h"
 #include "signalDefinition.h"
+#include "uf.h"
 
 int main(int _argc, char ** _argv){
      gtk_init(&_argc, &_argv);

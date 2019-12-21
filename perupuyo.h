@@ -23,18 +23,20 @@ private:
 public:
      int table[PERUPUYO_TABLE_H][PERUPUYO_TABLE_W]; // table size
      int readyPuyo[PERUPUYO_NEXT*2],cPuyo[2]; // color (readyPuyo: reserved puyos, cPuyo: controling puyos)
-     int phase,lptime; // phase:phase, lptime:loop time
+     int phase; // phase:phase
      double sx,sy,w,h,blockSize; // draw property
      double cpx,cpy; // controling puyo location
      bool boost; // puyospeed boost i/o
      double speed=0.005,bstspeed=0.2; // puyospeed (speed:default, bstspeed:boosted speed)
      int cangl; // angl of controling puyos
+     int pushingTime, lpTime; //
+     int pushingTimeLimit=100,lpTimeLimit=1500;
 
      puyoSet(){}
-     ;
+     
 
      void setup(double _sx, double _sy, double _h){
-         sx = _sx;
+          sx = _sx;
           sy = _sy;
           h  = _h ;
           blockSize = h/(double)PERUPUYO_TABLE_H;
@@ -44,9 +46,10 @@ public:
                     table[y][x]=y==0;
                }
           }
-          phase     = 0;
-          lptime    = 0;
-          boost     = false;
+          phase      = 0;
+          pushingTime= 0;
+          boost      = false;
+          lpTime     = 0;
           for(int i=0;i<PERUPUYO_NEXT*2;i++){
                readyPuyo[i]=rd()%PERUPUYO_TYPE_NUM+2;
           }
@@ -84,20 +87,32 @@ public:
 
      }
 
-     void nextPhase(bool first=false){
+     void sortTable(){ //
+          for(int ix=0;ix<PERUPUYO_TABLE_W;ix++){
+               int voids=0;
+               for(int iy=PERUPUYO_TABLE_H-1;iy>=0;iy--){
+                    if(table[iy][ix]<2)voids++;
+                    else{
+                         table[iy+voids][ix]=table[iy][ix];
+                         if(voids)table[iy][ix]=0;
+                    }
+               }
+          }
+     }
 
+     void nextPhase(bool first=false){ // 
 
           // put controled puyos
-          
           for(int i=0;i<2;i++){
-               if(phase)table[int(cpy)+i*int(angly[cangl])][int(cpx)+i*int(anglx[cangl]) ]=cPuyo[i];
+               if(!first)table[int(cpy)+i*int(angly[cangl])][int(cpx)+i*int(anglx[cangl]) ]=cPuyo[i];
                cPuyo[i]=readyPuyo[i];
           }
 
           phase++;
-          cpx=2;
-          cpy=0;
-          cangl=0;
+          lpTime = 0;
+          cpx    = 2;
+          cpy    = 0;
+          cangl  = 0;
           
           //cPuyo[1]=readyPuyo[1];
           if(!first){
@@ -109,6 +124,8 @@ public:
                     }
                }
           }
+
+          sortTable();
 
      }
 
@@ -139,14 +156,23 @@ public:
 
      void process(){
           cpy+=boost ? bstspeed : speed;
-          if(!checkFloor() or !checkPuyoCollision())nextPhase();
-          //std::cout<<cangl<<std::endl;
+          lpTime++;
+          //std::cout<<lpTime<<std::endl;
+          if(!checkFloor() or !checkPuyoCollision()){
+                pushingTime++;
+                if(pushingTime>pushingTimeLimit  or lpTime>lpTimeLimit){
+                      pushingTime=0;
+                      nextPhase();
+                }
+                cpy=floor(cpy)-0.000001;
+          }
+          
      }
 
      void varyAngl(short _ap){
           int bcangl=cangl;
           cangl=(cangl+_ap+4)%4;
-          if(cangl!=0){
+          if(cangl!=0 or lpTime>lpTimeLimit){
                if(!checkFloor() or !checkWall() or !checkPuyoCollision()){
                     cangl=bcangl;
                }
