@@ -6,9 +6,10 @@ peruHost mainHost;
 #define PERUPUYO_TABLE_W 6
 #define PERUPUYO_TABLE_H 13
 #define PERUPUYO_NEXT    3
-#define PERUPUYO_TYPE_NUM 3
+#define PERUPUYO_TYPE_NUM 4
 #define PERUPUYO_KEY_UPDATE 10
 #define PERUPUYO_ERASE_TERM 4
+#define PERUPUYO_GRAVITY_SIZE 0.2
 
 #define _X(X) mainHost.getPosFromCurrentSizeX(X)
 #define _Y(Y) mainHost.getPosFromCurrentSizeY(Y)
